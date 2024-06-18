@@ -3,28 +3,15 @@ const gameboard = (function () {
 
   const board = Array(CELLS).fill(null);
 
-  let players = [];
+  let players = [createPlayer("sinskiy", "x"), createPlayer("kilwinta", "o")];
   let active = 0;
 
-  const playGame = (...newPlayers) => {
-    players = newPlayers;
-    while (getWinner() === null) {
-      playRound();
-    }
-  };
+  const playRound = (cellPosition) => {
+    console.log(getWinner());
+    if (getWinner() !== null) return;
 
-  const playRound = () => {
-    let choice = -1;
-    while (isInvalidChoice()) {
-      choice = Number(prompt("choice")) - 1;
-    }
-
-    markCell(players[active].mark, choice);
+    markCell(players[active].mark, cellPosition);
     switchPlayerTurn();
-
-    function isInvalidChoice() {
-      return isNaN(choice) || choice < 0 || choice > 8;
-    }
 
     function markCell(playerMark, cellPosition) {
       board[cellPosition] = playerMark;
@@ -59,7 +46,7 @@ const gameboard = (function () {
     return null;
   }
 
-  return { board, playGame };
+  return { board, players, playRound };
 })();
 
 function createPlayer(name, mark) {
@@ -72,12 +59,19 @@ const displayController = (function () {
   function updateBoard() {
     boardDiv.textContent = "";
 
-    for (const i of gameboard.board) {
-      const cell = gameboard.board[i];
+    for (const i in gameboard.board) {
+      const cellMark = gameboard.board[i];
 
       const cellButton = document.createElement("button");
       cellButton.classList.add("cell");
-      cellButton.dataset.position = i;
+      cellButton.dataset.position = Number(i);
+      cellButton.innerText = cellMark ?? "";
+      cellButton.addEventListener("click", (e) => {
+        if (e.currentTarget.innerText) return;
+
+        gameboard.playRound(e.currentTarget.dataset.position);
+        updateBoard();
+      });
 
       boardDiv.appendChild(cellButton);
     }
@@ -86,6 +80,4 @@ const displayController = (function () {
   return { updateBoard };
 })();
 
-const player1 = createPlayer("sinskiy", "x");
-const player2 = createPlayer("kilwinta", "o");
 displayController.updateBoard();
