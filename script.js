@@ -1,7 +1,7 @@
 const gameboard = (function () {
   const CELLS = 9;
 
-  const board = fillEmptyBoard();
+  let board = fillEmptyBoard();
   function fillEmptyBoard() {
     return Array(CELLS).fill(null);
   }
@@ -12,6 +12,7 @@ const gameboard = (function () {
 
   let status;
   const getStatus = () => status;
+  const setStatus = (newStatus) => (status = newStatus);
 
   const playRound = (cellPosition) => {
     markCell(players[active].mark, cellPosition);
@@ -38,6 +39,11 @@ const gameboard = (function () {
     }
   };
 
+  function reset() {
+    board = fillEmptyBoard();
+    status = "";
+    active = 0;
+  }
   function getWinner() {
     const lines = [
       [0, 1, 2],
@@ -61,7 +67,14 @@ const gameboard = (function () {
     return board.every((cell) => cell);
   }
 
-  return { board, players, getActive, getStatus, playRound };
+  return {
+    board,
+    players,
+    getActive,
+    getStatus,
+    reset,
+    playRound,
+  };
 })();
 
 function createPlayer(name, mark) {
@@ -88,6 +101,7 @@ const displayController = (function () {
   function handleGameRestart() {
     startForm.style.display = "block";
     boardDiv.textContent = "";
+    gameboard.reset();
   }
 
   const turnDiv = document.querySelector(".turn");
@@ -141,5 +155,3 @@ const displayController = (function () {
 
   return { updateDOM };
 })();
-
-// displayController.updateDOM();

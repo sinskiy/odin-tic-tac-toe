@@ -24,9 +24,9 @@ body {
 }
 
 .cell {
-  display: grid;
-  place-items: center;
-  place-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   border: 1px solid white;
 
