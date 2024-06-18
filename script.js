@@ -76,12 +76,18 @@ const displayController = (function () {
   function handleGameStart(e) {
     e.preventDefault();
 
+    startForm.style.display = "none";
+
     gameboard.players = [
       createPlayer(playerX.value, "x"),
       createPlayer(playerO.value, "o"),
     ];
 
     updateDOM();
+  }
+  function handleGameRestart() {
+    startForm.style.display = "block";
+    boardDiv.textContent = "";
   }
 
   const turnDiv = document.querySelector(".turn");
@@ -98,6 +104,13 @@ const displayController = (function () {
 
       boardDiv.appendChild(cellButton);
     }
+    const restartButton = document.createElement("button");
+    restartButton.classList.add("restart");
+    restartButton.addEventListener("click", handleGameRestart);
+    restartButton.innerText = "restart";
+
+    boardDiv.appendChild(restartButton);
+
     updateTurn();
 
     function updateCell(e) {
