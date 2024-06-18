@@ -8,6 +8,7 @@
 
 body {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
@@ -19,16 +20,18 @@ body {
 
 .board {
   display: grid;
-  grid-template: repeat(3, 5rem) / repeat(3, 5rem);
-
-  border: 1px solid white;
-
-  font-size: 2rem;
-  font-weight: bold;
+  grid-template: repeat(3, 10rem) / repeat(3, 10rem);
 }
 
 .cell {
   display: grid;
   place-items: center;
-  border: 1px dashed white;
+  place-content: center;
+
+  border: 1px solid white;
+
+  font-weight: bold;
+  font-size: 12rem;
+
+  background-color: transparent;
 }

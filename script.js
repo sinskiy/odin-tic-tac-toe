@@ -5,10 +5,12 @@ const gameboard = (function () {
 
   let players = [createPlayer("sinskiy", "x"), createPlayer("kilwinta", "o")];
   let active = 0;
+  const getActive = () => active;
 
   const playRound = (cellPosition) => {
-    console.log(getWinner());
-    if (getWinner() !== null) return;
+    const winner = getWinner();
+    if (winner) return winner;
+    if (isDraw()) return "draw";
 
     markCell(players[active].mark, cellPosition);
     switchPlayerTurn();
@@ -45,8 +47,11 @@ const gameboard = (function () {
     }
     return null;
   }
+  function isDraw() {
+    return board.every((cell) => cell);
+  }
 
-  return { board, players, playRound };
+  return { board, players, getActive, playRound };
 })();
 
 function createPlayer(name, mark) {
@@ -54,30 +59,42 @@ function createPlayer(name, mark) {
 }
 
 const displayController = (function () {
+  const turnDiv = document.querySelector(".turn");
   const boardDiv = document.querySelector(".board");
 
-  function updateBoard() {
+  function updateDOM() {
     boardDiv.textContent = "";
 
     for (const i in gameboard.board) {
-      const cellMark = gameboard.board[i];
-
       const cellButton = document.createElement("button");
       cellButton.classList.add("cell");
       cellButton.dataset.position = Number(i);
-      cellButton.innerText = cellMark ?? "";
-      cellButton.addEventListener("click", (e) => {
-        if (e.currentTarget.innerText) return;
-
-        gameboard.playRound(e.currentTarget.dataset.position);
-        updateBoard();
-      });
+      cellButton.addEventListener("click", updateCell);
 
       boardDiv.appendChild(cellButton);
     }
+    updateTurn();
+
+    function updateCell(e) {
+      const cellPosition = Number(e.currentTarget.dataset.position);
+      const result = gameboard.playRound(cellPosition);
+      if (result) return;
+
+      const cellMark = gameboard.board[cellPosition];
+
+      e.currentTarget.innerText = cellMark;
+
+      updateTurn();
+    }
+
+    function updateTurn() {
+      turnDiv.textContent = `${
+        gameboard.players[gameboard.getActive()].name
+      }'s turn`;
+    }
   }
 
-  return { updateBoard };
+  return { updateDOM };
 })();
 
-displayController.updateBoard();
+displayController.updateDOM();
