@@ -1,17 +1,19 @@
 const gameboard = (function () {
   const CELLS = 9;
 
-  const board = Array(CELLS).fill(null);
+  const board = fillEmptyBoard();
+  function fillEmptyBoard() {
+    return Array(CELLS).fill(null);
+  }
 
   let players = [createPlayer("sinskiy", "x"), createPlayer("kilwinta", "o")];
   let active = 0;
   const getActive = () => active;
 
-  const playRound = (cellPosition) => {
-    const winner = getWinner();
-    if (winner) return winner;
-    if (isDraw()) return "draw";
+  let status;
+  const getStatus = () => status;
 
+  const playRound = (cellPosition) => {
     markCell(players[active].mark, cellPosition);
     switchPlayerTurn();
 
@@ -25,6 +27,14 @@ const gameboard = (function () {
       } else {
         active++;
       }
+    }
+
+    const winner = getWinner();
+    if (winner) {
+      status = `winner: ${winner}`;
+    }
+    if (isDraw()) {
+      status = "draw";
     }
   };
 
@@ -51,7 +61,7 @@ const gameboard = (function () {
     return board.every((cell) => cell);
   }
 
-  return { board, players, getActive, playRound };
+  return { board, players, getActive, getStatus, playRound };
 })();
 
 function createPlayer(name, mark) {
@@ -59,6 +69,21 @@ function createPlayer(name, mark) {
 }
 
 const displayController = (function () {
+  const startForm = document.querySelector(".start");
+  const playerX = document.querySelector("#x");
+  const playerO = document.querySelector("#o");
+  startForm.addEventListener("submit", handleGameStart);
+  function handleGameStart(e) {
+    e.preventDefault();
+
+    gameboard.players = [
+      createPlayer(playerX.value, "x"),
+      createPlayer(playerO.value, "o"),
+    ];
+
+    updateDOM();
+  }
+
   const turnDiv = document.querySelector(".turn");
   const boardDiv = document.querySelector(".board");
 
@@ -76,11 +101,15 @@ const displayController = (function () {
     updateTurn();
 
     function updateCell(e) {
+      if (gameboard.getStatus()) {
+        updateTurn();
+        return;
+      }
+
       if (e.currentTarget.innerText) return;
 
       const cellPosition = Number(e.currentTarget.dataset.position);
-      const result = gameboard.playRound(cellPosition);
-      if (result) return;
+      gameboard.playRound(cellPosition);
 
       const cellMark = gameboard.board[cellPosition];
 
@@ -91,13 +120,13 @@ const displayController = (function () {
     }
 
     function updateTurn() {
-      turnDiv.textContent = `${
-        gameboard.players[gameboard.getActive()].name
-      }'s turn`;
+      turnDiv.textContent = gameboard.getStatus()
+        ? gameboard.getStatus()
+        : `${gameboard.players[gameboard.getActive()].name}'s turn`;
     }
   }
 
   return { updateDOM };
 })();
 
-displayController.updateDOM();
+// displayController.updateDOM();
