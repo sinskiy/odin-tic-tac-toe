@@ -76,6 +76,8 @@ const displayController = (function () {
     updateTurn();
 
     function updateCell(e) {
+      if (e.currentTarget.innerText) return;
+
       const cellPosition = Number(e.currentTarget.dataset.position);
       const result = gameboard.playRound(cellPosition);
       if (result) return;
@@ -83,6 +85,7 @@ const displayController = (function () {
       const cellMark = gameboard.board[cellPosition];
 
       e.currentTarget.innerText = cellMark;
+      e.currentTarget.classList.add(cellMark);
 
       updateTurn();
     }
