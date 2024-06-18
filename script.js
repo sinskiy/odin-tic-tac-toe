@@ -1,4 +1,4 @@
-const Gameboard = (function () {
+const gameboard = (function () {
   const CELLS = 9;
 
   const board = Array(CELLS).fill(null);
@@ -6,8 +6,8 @@ const Gameboard = (function () {
   let players = [];
   let active = 0;
 
-  const playGame = (player1, player2) => {
-    players = [player1, player2];
+  const playGame = (...newPlayers) => {
+    players = newPlayers;
     while (getWinner() === null) {
       playRound();
     }
@@ -59,13 +59,33 @@ const Gameboard = (function () {
     return null;
   }
 
-  return { playGame };
+  return { board, playGame };
 })();
 
 function createPlayer(name, mark) {
   return { name, mark };
 }
 
+const displayController = (function () {
+  const boardDiv = document.querySelector(".board");
+
+  function updateBoard() {
+    boardDiv.textContent = "";
+
+    for (const i of gameboard.board) {
+      const cell = gameboard.board[i];
+
+      const cellButton = document.createElement("button");
+      cellButton.classList.add("cell");
+      cellButton.dataset.position = i;
+
+      boardDiv.appendChild(cellButton);
+    }
+  }
+
+  return { updateBoard };
+})();
+
 const player1 = createPlayer("sinskiy", "x");
 const player2 = createPlayer("kilwinta", "o");
-Gameboard.playGame(player1, player2);
+displayController.updateBoard();
