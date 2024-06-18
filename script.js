@@ -1,12 +1,14 @@
 const gameboard = (function () {
-  const gameboard = Array(9).fill(null);
+  const BOARD_LENGTH = 9;
+
+  const squares = Array(BOARD_LENGTH).fill(null);
   let players = [];
   let player = 0;
   const startGame = (...newPlayers) => {
     players = newPlayers;
     while (getWinner() === null) {
       const playerObj = players[player];
-      const choicePrompt = `${playerObj.name} choice ${gameboard.join()}`;
+      const choicePrompt = `${playerObj.name} choice ${squares.join()}`;
 
       let choice = -1;
       while (incorrectChoice()) {
@@ -18,7 +20,7 @@ const gameboard = (function () {
       passToNextPlayer();
 
       function incorrectChoice() {
-        return isNaN(choice) || choice < 0 || choice > 8 || gameboard[choice];
+        return isNaN(choice) || choice < 0 || choice > 8 || squares[choice];
       }
     }
   };
@@ -30,7 +32,7 @@ const gameboard = (function () {
     }
   }
   function markPosition(mark, position) {
-    gameboard[position] = mark;
+    squares[position] = mark;
   }
   const getWinner = () => {
     const lines = [
@@ -46,16 +48,16 @@ const gameboard = (function () {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (
-        gameboard[a] &&
-        gameboard[a] === gameboard[b] &&
-        gameboard[a] === gameboard[c]
+        squares[a] &&
+        squares[a] === squares[b] &&
+        squares[a] === squares[c]
       ) {
-        return gameboard[a];
+        return squares[a];
       }
     }
     return null;
   };
-  return { startGame, getWinner };
+  return { BOARD_LENGTH, startGame, getWinner };
 })();
 
 function createPlayer(name, mark) {
@@ -63,9 +65,24 @@ function createPlayer(name, mark) {
 }
 
 const displayController = (function () {
-  return {};
+  let board;
+  function createBoard() {
+    board = document.createElement("div");
+    board.classList.add("board");
+
+    for (let i = 0; i < gameboard.BOARD_LENGTH; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      board.appendChild(cell);
+    }
+    document.body.append(board);
+  }
+  return {
+    createBoard,
+  };
 })();
 
 const player1 = createPlayer("1", "x");
 const player2 = createPlayer("2", "o");
-gameboard.startGame(player1, player2);
+displayController.createBoard();
+// gameboard.startGame(player1, player2);
