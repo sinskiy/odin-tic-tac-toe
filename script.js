@@ -12,7 +12,6 @@ const gameboard = (function () {
 
   let status;
   const getStatus = () => status;
-  const setStatus = (newStatus) => (status = newStatus);
 
   const playRound = (cellPosition) => {
     markCell(players[active].mark, cellPosition);
@@ -20,6 +19,7 @@ const gameboard = (function () {
 
     function markCell(playerMark, cellPosition) {
       board[cellPosition] = playerMark;
+      console.log(board);
     }
     function switchPlayerTurn() {
       const lastPlayerIndex = players.length - 1;
@@ -99,8 +99,12 @@ const displayController = (function () {
     updateDOM();
   }
   function handleGameRestart() {
-    startForm.style.display = "block";
+    startForm.style.display = "grid";
     boardDiv.textContent = "";
+    boardDiv.style.display = "none";
+    turnDiv.style.display = "none";
+    const restartButton = document.querySelector(".restart");
+    restartButton.style.display = "none";
     gameboard.reset();
   }
 
@@ -108,6 +112,8 @@ const displayController = (function () {
   const boardDiv = document.querySelector(".board");
 
   function updateDOM() {
+    boardDiv.style.display = "grid";
+    turnDiv.style.display = "block";
     boardDiv.textContent = "";
 
     for (const i in gameboard.board) {
@@ -118,12 +124,9 @@ const displayController = (function () {
 
       boardDiv.appendChild(cellButton);
     }
-    const restartButton = document.createElement("button");
-    restartButton.classList.add("restart");
+    const restartButton = document.querySelector(".restart");
     restartButton.addEventListener("click", handleGameRestart);
-    restartButton.innerText = "restart";
-
-    boardDiv.appendChild(restartButton);
+    restartButton.style.display = "block";
 
     updateTurn();
 
@@ -133,14 +136,13 @@ const displayController = (function () {
         return;
       }
 
-      if (e.currentTarget.innerText) return;
+      if (e.currentTarget.classList.length > 1) return;
 
       const cellPosition = Number(e.currentTarget.dataset.position);
       gameboard.playRound(cellPosition);
 
       const cellMark = gameboard.board[cellPosition];
 
-      e.currentTarget.innerText = cellMark;
       e.currentTarget.classList.add(cellMark);
 
       updateTurn();

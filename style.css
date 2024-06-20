@@ -1,9 +1,14 @@
 :root {
-  color-scheme: dark;
+  --primary: #4ee82c;
+  --secondary: #7beef1;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  height: 100%;
 }
 
 body {
@@ -12,34 +17,105 @@ body {
   justify-content: center;
   align-items: center;
 
-  height: 100vh;
+  height: 100%;
   margin: 0;
 
-  background-color: black;
+  background-color: white;
+  color: black;
+}
+
+.turn {
+  margin-bottom: 1rem;
+  font-weight: 500;
+  font-size: 1.5rem;
 }
 
 .board {
-  display: grid;
+  display: none;
   grid-template: repeat(3, 10rem) / repeat(3, 10rem);
+  gap: 1rem;
 }
 
 .cell {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: none;
 
-  border: 1px solid white;
+  background-color: lightgray;
+  border-radius: 2rem;
 
-  font-weight: bold;
-  font-size: 12rem;
-
-  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: background-color 150ms;
 }
 
 .x {
-  color: blue;
+  background-image: url("./x.svg");
+  background-size: contain;
+  background-color: #4ee82c55;
 }
 
 .o {
-  color: red;
+  background-image: url("./o.svg");
+  background-size: 128px;
+  background-color: #7beef155;
+}
+
+form {
+  display: grid;
+  justify-items: center;
+}
+
+form .form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+form .form-column {
+  display: grid;
+  gap: 0.25rem;
+}
+
+label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+input {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid black;
+  outline: none;
+}
+#x:focus {
+  border: 2px solid var(--primary);
+}
+#o:focus {
+  border: 2px solid var(--secondary);
+}
+input::placeholder {
+  color: rgb(0 0 0 / 0.8);
+}
+
+.start button {
+  margin-top: 1rem;
+
+  width: 6rem;
+  height: 6rem;
+  border: none;
+
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  border-radius: 9999px;
+}
+
+.restart {
+  display: none;
+
+  margin-top: 1rem;
+  padding: 0.5rem 4rem;
+  border: none;
+
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  border-radius: 9999px;
+
+  font-weight: 500;
+  font-size: 1.25rem;
 }

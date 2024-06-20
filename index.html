@@ -10,16 +10,19 @@
   <body>
     <div class="turn"></div>
     <form action="" method="get" class="start">
-      <div>
-        <label for="x">Player x</label>
-        <input type="text" name="x" id="x" value="player 1" required />
+      <div class="form-row">
+        <div class="form-column">
+          <label for="x">Player x</label>
+          <input type="text" name="x" id="x" placeholder="player 1" required />
+        </div>
+        <div class="form-column">
+          <label for="o">Player o</label>
+          <input type="text" name="o" id="o" placeholder="player 2" required />
+        </div>
       </div>
-      <div>
-        <label for="o">Player o</label>
-        <input type="text" name="o" id="o" value="player 2" required />
-      </div>
-      <button type="submit">start</button>
+      <button type="submit"><img src="play.svg" alt="play icon" /></button>
     </form>
     <div class="board"></div>
+    <button class="restart">restart</button>
   </body>
 </html>
